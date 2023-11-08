@@ -1,0 +1,80 @@
+import math
+
+# ANSI escape sequence for red color (below command is not required, but we used to add color to terminal output for better readability and visual distinction)
+red_color = '\033[91m'
+reset_color = '\033[0m'
+
+# Function to get material choice and corresponding mu value (not related to Scheme #1 or #2)
+def get_material_choice():
+    print("Choose a material:")
+    print("1. Space")
+    print("2. Neural tissue")
+    choice = input("Enter your choice (1 or 2): ")
+
+    if choice == '1':
+        mu_0 = 12.56 * 10**-7
+    elif choice == '2':
+        mu_0 = 3.14 * 10**-7
+    else:
+        print(f"{red_color}Invalid choice. Using default value for mu_0.{reset_color}")
+        mu_0 = 3.14 * 10**-7
+
+    return mu_0
+
+# Input eigenvalues
+neuron_count = 5
+w_values = []
+u_values = []
+
+# Pick the material and its mu value that matches
+mu_n = get_material_choice()
+
+# In this section, we have assumed the distance value to be 5000 nm or 5 µm (based on the paper data, reference #13)
+r = float(input("Enter the distance from the neurons (in nanometers): "))
+# Notify about the range of w values
+print(f"{red_color}(w must be between 0 and 1){reset_color}")
+
+# Get w and u values for each neuron (headline #4.1.10 discussed about yellow command in detail)
+for i in range(neuron_count):
+    while True:
+        w = float(input(f"Enter the value of w for neuron {i + 1}: "))
+        if 0 <= w <= 1:
+            break
+        print(f"{red_color}Invalid input! w must be between 0 and 1.{reset_color}")
+    u = float(input(f"Enter the value of u (in picoamperes) for neuron {i + 1}: "))
+    w_values.append(w)  # No conversion needed for w values
+    u_values.append(u)  # No conversion needed for u values
+
+# Here we perform conversion factor from pA to femtotesla (fT)
+conversion_factor = 1000  # 0.000001 femtotesla per 1 picoampere
+
+# Initialize a list to store the calculated currents
+calculated_currents = []
+
+# Calculate the I and MF for each neuron
+for i in range(neuron_count):
+    w = w_values[i]
+    u = u_values[i]
+
+    # Calculate the electric current in pA (no conversion needed)
+    I = w * u
+
+    # Calculate the MF in fT
+    B = (mu_n * I) / (2 * math.pi * (r * 10 ** -6))  # Convert micrometers to meters
+
+    # Convert MF to femtotesla
+    B_femtotesla = B * conversion_factor
+
+    # we Append the calculated current to the list
+    calculated_currents.append(B_femtotesla)
+
+# Here we calculate the total MF by summing all
+total_field = sum(calculated_currents)
+
+# Output the calculated currents for all neurons
+print("Calculated currents (in femtotesla) for each neuron:")
+for i in range(neuron_count):
+    print(f"Neuron {i + 1}: {calculated_currents[i]} femtotesla")
+
+# Output the total MF
+print(f"Total MF: {total_field} femtotesla")
