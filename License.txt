@@ -1,0 +1,13 @@
+
+
+This code is provided under the following terms:
+
+1. You must be a current student or researcher in the field of Neuroscience to use this code.
+
+2. If you use this code in your research or project, you are required to reference the following paper:
+
+   Keyvan Shahryarimorad. "Title of Paper." Journal of Neuroscience [Year], [Volume], [Issue], [Page Numbers].
+
+By using this code, you agree to abide by these terms.
+
+For inquiries or to request permission for additional usage, please contact the author at [your contact email].
